@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Shooter
+namespace Graphene.Acting
 {
     [Serializable]
     public class Life

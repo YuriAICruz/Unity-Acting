@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using Graphene.Utils;
 using UnityEngine;
-using Utils;
 
-namespace Shooter
+namespace Graphene.Acting
 {
     [Serializable]
     public class Stamina

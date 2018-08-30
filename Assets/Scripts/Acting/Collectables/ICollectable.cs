@@ -1,6 +1,6 @@
-﻿using Acting;
+﻿using Graphene.Acting;
 
-namespace Shooter.Collectables
+namespace Graphene.Acting.Collectables
 {
     public interface ICollectable
     {
