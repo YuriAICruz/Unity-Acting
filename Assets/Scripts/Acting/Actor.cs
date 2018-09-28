@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Graphene.Acting
 {
@@ -13,9 +14,9 @@ namespace Graphene.Acting
         public Life Life;
         public Stamina Stamina;
 
-        public virtual void DoDamage(int damage)
+        public virtual void DoDamage(int damage, Vector3 from)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
