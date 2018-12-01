@@ -1,3 +1,6 @@
 [submodule "Packages/Physics"]
 	path = Packages/Physics
 	url = git@github.com:YuriAICruz/Unity-Physics.git
+[submodule "Packages/Inventory"]
+	path = Packages/Inventory
+	url = git@github.com:YuriAICruz/Unity-Inventory.git
