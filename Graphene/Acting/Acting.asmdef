@@ -2,7 +2,9 @@
     "name": "Graphene.Acting",
     "references": [
         "Physics",
-        "Graphene.Utils"
+        "Graphene.Utils",
+        "Graphene.CameraManagement",
+        "Graphene.InputManager"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

@@ -1,0 +1,12 @@
+{
+    "name": "Graphene.ActingEditor",
+    "references": [
+        "Graphene.Acting"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
