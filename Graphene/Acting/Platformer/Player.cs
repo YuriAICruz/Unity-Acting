@@ -9,7 +9,6 @@ namespace Graphene.Acting.Platformer
 {
     public class Player : PlatformerActor
     {
-        [HideInInspector]
         [SerializeField] 
         private PlatformerInputManager _input;
 

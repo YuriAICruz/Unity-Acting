@@ -1,8 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Graphene.Acting.Collectables;
 using Graphene.CameraManagement;
 using Graphene.Physics.Platformer;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Graphene.Acting.Platformer
 {
@@ -56,12 +58,25 @@ namespace Graphene.Acting.Platformer
         {
             _actorController = Utils.InterfaceHelper.GetInterfaceComponent<IActorController>(this);
 
+            if (_actorController == null)
+            {
+                Debug.LogError("No IActorController found");
+                gameObject.SetActive(false);
+                return;
+            }
+
             if (_actorController.isLocalPlayer)
             {
                 OnEnable();
             }
 
             _camera = FindObjectOfType<CameraBehavior>();
+            
+            if (_camera == null)
+            {
+                Debug.LogError("No CameraBehavior found");
+                return;
+            }
 
             if (_actorController.isLocalPlayer)
                 _camera.SetTarget(this.transform);

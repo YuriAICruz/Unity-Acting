@@ -4,7 +4,8 @@
         "Physics",
         "Graphene.Utils",
         "Graphene.CameraManagement",
-        "Graphene.InputManager"
+        "Graphene.InputManager",
+        "Graphene.Inventory"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
