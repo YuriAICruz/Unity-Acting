@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Graphene.Acting.Platformer
+namespace Graphene.Acting.ActorController
 {
     public interface IActorController
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Graphene.Acting.Platformer
+namespace Graphene.Acting
 {
     public class AnimationManager
     {
