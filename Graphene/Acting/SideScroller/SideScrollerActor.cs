@@ -35,6 +35,7 @@ namespace Graphene.Acting.SideScroller
         }
 
 
+
         private void Start()
         {
             _actorController = Utils.InterfaceHelper.GetInterfaceComponent<IActorController>(this);
