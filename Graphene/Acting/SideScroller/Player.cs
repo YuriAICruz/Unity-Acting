@@ -7,6 +7,7 @@ namespace Graphene.Acting.SideScroller
     {
         [SerializeField] 
         private SideScrollerInputManager _input;
+        public float JumpSpeed;
         
         protected override void OnStart()
         {
@@ -33,13 +34,14 @@ namespace Graphene.Acting.SideScroller
 
         private void JumpEnd()
         {
-            _physics.Jump(false);
+            _physics.Jump(false, 0);
         }
 
         private void JumpStart()
         {
-            _physics.Jump(true);
+            _physics.Jump(true, JumpSpeed);
         }
+
 
         private void Move(Vector2 dir)
         {

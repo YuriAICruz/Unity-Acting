@@ -13,6 +13,7 @@ namespace Graphene.Acting.SideScroller
         protected IActorController _actorController;
         
         public float Speed;
+        public float Gravity;
 
         protected CameraBehavior _camera;
 
@@ -23,7 +24,7 @@ namespace Graphene.Acting.SideScroller
         private void Awake()
         {
             var cap = GetComponent<CapsuleCollider2D>();
-            _physics = new SideScrollerCharacterPhysics(GetComponent<Rigidbody2D>(), cap, Camera.main.transform);
+            _physics = new SideScrollerCharacterPhysics(GetComponent<Rigidbody2D>(), cap, Camera.main.transform, Gravity);
 
             _animation = new AnimationManager(GetComponent<Animator>());
 
@@ -32,7 +33,8 @@ namespace Graphene.Acting.SideScroller
 
             OnAwake();
         }
-        
+
+
         private void Start()
         {
             _actorController = Utils.InterfaceHelper.GetInterfaceComponent<IActorController>(this);
