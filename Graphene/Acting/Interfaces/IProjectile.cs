@@ -6,6 +6,6 @@ namespace Graphene.Acting.Interfaces
     {
         bool Idle { get; set; }
 
-        void Shoot(Vector3 pos, Vector3 dir);
+        void Shoot(Vector3 pos, Vector3 dir, GameObject ignore = null);
     }
 }
