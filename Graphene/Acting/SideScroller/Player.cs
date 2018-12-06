@@ -46,13 +46,20 @@ namespace Graphene.Acting.SideScroller
 
             if (_jumpreset != null)
                 StopCoroutine(_jumpreset);
-            
+
             _jumpreset = StartCoroutine(EndJumpRoutine());
+        }
+
+        public override void DoDamage(int damage, Vector3 from)
+        {
+            base.DoDamage(damage, from);
+
+            _physics.Throw(transform.position - from, 20);
         }
 
         IEnumerator EndJumpRoutine()
         {
-            yield return new WaitForSeconds(JumpTime);
+            yield return new WaitForSeconds(JumpTime * (_physics.Sliding ? 0.5f : 1));
             JumpEnd();
         }
 
@@ -61,6 +68,7 @@ namespace Graphene.Acting.SideScroller
         {
             _physics.Move(dir, Speed);
             _animation.SetSpeed(_physics.Speed());
+            _animation.SetSliding(_physics.Sliding);
         }
 
         protected override void OnDisabled()

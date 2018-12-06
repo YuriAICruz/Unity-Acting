@@ -14,6 +14,7 @@ namespace Graphene.Acting.SideScroller
         
         public float Speed;
         public float Gravity;
+        public float WallSlide;
 
         protected CameraBehavior _camera;
 
@@ -24,7 +25,7 @@ namespace Graphene.Acting.SideScroller
         private void Awake()
         {
             var cap = GetComponent<CapsuleCollider2D>();
-            _physics = new SideScrollerCharacterPhysics(GetComponent<Rigidbody2D>(), cap, Camera.main.transform, Gravity);
+            _physics = new SideScrollerCharacterPhysics(GetComponent<Rigidbody2D>(), cap, Camera.main.transform, Gravity, WallSlide);
 
             _animation = new AnimationManager(GetComponent<Animator>());
 
@@ -34,7 +35,11 @@ namespace Graphene.Acting.SideScroller
             OnAwake();
         }
 
-
+        public override void DoDamage(int damage, Vector3 from)
+        {
+            Life.ReceiveDamage(damage);
+            _animation.ReceiveDamage();
+        }
 
         private void Start()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Graphene.Acting.Interfaces;
 using UnityEngine;
 
 namespace Graphene.Acting

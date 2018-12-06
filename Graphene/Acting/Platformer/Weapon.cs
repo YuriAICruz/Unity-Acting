@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Graphene.Acting;
+using Graphene.Acting.Interfaces;
 using UnityEngine;
 
 namespace Graphene.Acting.Platformer

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Graphene.Acting
+namespace Graphene.Acting.Interfaces
 {
     public interface IDamageble
     {

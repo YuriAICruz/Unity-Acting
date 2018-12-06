@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Graphene.Acting.ActorController;
 using Graphene.Acting.Collectables;
+using Graphene.Acting.Interfaces;
 using Graphene.CameraManagement;
 using Graphene.Physics.Platformer;
 using UnityEngine;

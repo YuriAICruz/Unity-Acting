@@ -67,5 +67,10 @@ namespace Graphene.Acting
             _animator.SetTrigger("Climb");
             _animator.SetFloat("ClimbHeight", height);
         }
+
+        public void SetSliding(bool sliding)
+        {
+            _animator.SetBool("Sliding", sliding);
+        }
     }
 }

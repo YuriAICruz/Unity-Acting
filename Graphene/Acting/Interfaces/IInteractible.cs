@@ -1,4 +1,4 @@
-﻿namespace Graphene.Acting
+﻿namespace Graphene.Acting.Interfaces
 {
     public interface IInteractible
     {
