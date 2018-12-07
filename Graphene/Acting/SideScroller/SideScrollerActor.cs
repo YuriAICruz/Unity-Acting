@@ -16,7 +16,7 @@ namespace Graphene.Acting.SideScroller
         public float Gravity;
         public float WallSlide;
 
-        protected CameraBehavior _camera;
+        protected ICameraBehavior _camera;
 
         protected SideScrollerCharacterPhysics _physics;
 
@@ -57,7 +57,7 @@ namespace Graphene.Acting.SideScroller
                 OnEnable();
             }
 
-            _camera = FindObjectOfType<CameraBehavior>();
+            _camera = Utils.InterfaceHelper.FindObject<ICameraBehavior>();
             
             if (_camera == null)
             {
@@ -118,6 +118,7 @@ namespace Graphene.Acting.SideScroller
 
         protected virtual void OnDie()
         {   
+            _animation.Die();
         }
     }
 }

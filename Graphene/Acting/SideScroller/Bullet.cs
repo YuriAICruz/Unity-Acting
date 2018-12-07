@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Graphene
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class Bullet : MonoBehaviour, IProjectile
     {
         [SerializeField] private float _radius;
@@ -15,6 +16,8 @@ namespace Graphene
         private Plane[] _planes;
         private GameObject _ignore;
 
+        private SpriteRenderer _renderer;
+
         public bool Idle { get; set; }
 
         private void Start()
@@ -23,6 +26,8 @@ namespace Graphene
             DisableBulet();
             _planes = GeometryUtility.CalculateFrustumPlanes(_cam);
             _iniLocPos = transform.localPosition;
+
+            _renderer = GetComponent<SpriteRenderer>();
         }
 
         public void Shoot(Vector3 pos, Vector3 dir, GameObject ignore = null)
@@ -31,6 +36,8 @@ namespace Graphene
             _dir = dir;
             _lastPos = transform.position = pos;
             _ignore = ignore;
+
+            _renderer.flipX = _dir.x > 0;
         }
 
         private void Update()

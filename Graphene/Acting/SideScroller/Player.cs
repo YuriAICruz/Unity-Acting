@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Graphene.Acting.Interfaces;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -18,15 +19,30 @@ namespace Graphene.Acting.SideScroller
         public int BulletsCount;
         public int BulletsSpeed;
         private IProjectile[] _bullets;
+        private IProjectile[] _chargedBullets;
         public string BulletResource = "Bullet_A";
+        public string BulletChargedResource = "Bullet_A_Charged";
         public Vector3 BulletSpawn;
 
-        public float DashSpeed, DashDuration;
-        private bool _shootHoolding;
+        public float DashSpeed;
+        public float DashDuration;
+        private bool _shootHolding;
+        private float _shootHoldingTime;
+        public float ChargeTime;
+
+        private SpriteRenderer[] _renderers;
+        private bool _charged;
+
+        public float YKill;
+        private Vector3 _respawnPosition;
 
         protected override void OnStart()
         {
             base.OnStart();
+
+            SetRespawn(transform.position);
+
+            _renderers = transform.GetComponentsInChildren<SpriteRenderer>();
 
             var res = Resources.Load<Bullet>(BulletResource);
             _bullets = new IProjectile[BulletsCount];
@@ -37,10 +53,36 @@ namespace Graphene.Acting.SideScroller
                 _bullets[i] = tmp.GetComponent<IProjectile>();
             }
 
+            res = Resources.Load<Bullet>(BulletChargedResource);
+            _chargedBullets = new IProjectile[BulletsCount];
+
+            for (int i = 0; i < BulletsCount; i++)
+            {
+                var tmp = Instantiate(res);
+                _chargedBullets[i] = tmp.GetComponent<IProjectile>();
+            }
+
             if (_actorController.isLocalPlayer)
             {
                 _input.Init();
                 OnEnabled();
+            }
+
+            _dir = 1;
+            SetSide();
+        }
+
+        private void SetRespawn(Vector3 pos)
+        {
+            _respawnPosition = pos;
+        }
+
+        void SetSide()
+        {
+            var f = _dir > 0;
+            foreach (var tr in _renderers)
+            {
+                tr.flipX = f;
             }
         }
 
@@ -76,21 +118,33 @@ namespace Graphene.Acting.SideScroller
             _input.ShootRelease -= ShootRelease;
         }
 
+        protected override void OnDie()
+        {
+            base.OnDie();
+
+            transform.position = _respawnPosition;
+        }
+
         private void ShootHold()
         {
-            _shootHoolding = true;
+            _shootHolding = true;
+            _shootHoldingTime = Time.time;
+            _animation.Shooting(true);
         }
 
         private void ShootRelease()
         {
-            if(!_shootHoolding) return;
-            _shootHoolding = false;
+            if (!_shootHolding) return;
+
+            _shootHolding = false;
+            _animation.Shooting(false);
+
             Shoot();
         }
 
         IProjectile GetNextBullet()
         {
-            foreach (var bullet in _bullets)
+            foreach (var bullet in _charged ? _chargedBullets : _bullets)
             {
                 if (bullet.Idle)
                     return bullet;
@@ -109,11 +163,17 @@ namespace Graphene.Acting.SideScroller
         private void DashEnd()
         {
             _physics.DashStop();
+            _animation.Dash(false);
         }
 
         private void DashStart()
         {
+            if (!_charged) return;
+
+            _shootHoldingTime = Time.time;
+
             _physics.Dash(_dir, DashSpeed, DashDuration);
+            _animation.Dash(true);
         }
 
         private void JumpEnd()
@@ -146,16 +206,38 @@ namespace Graphene.Acting.SideScroller
             JumpEnd();
         }
 
-
         private void Move(Vector2 dir)
         {
             if (Mathf.Abs(dir.x) > 0)
             {
                 _dir = Mathf.Sign(dir.x);
+                SetSide();
             }
+
+            _charged = Time.time - _shootHoldingTime >= ChargeTime && _shootHolding;
+
             _physics.Move(dir, Speed);
+            _animation.Charged(_charged);
             _animation.SetSpeed(_physics.Speed());
             _animation.SetSliding(_physics.Sliding);
+
+            if (transform.position.y < YKill)
+            {
+                OnDie();
+            }
         }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            var ch = other.GetComponent<ICheckpoint>();
+            if (ch == null) return;
+
+            SetRespawn(ch.GetPosition());
+        }
+    }
+
+    internal interface ICheckpoint
+    {
+        Vector3 GetPosition();
     }
 }

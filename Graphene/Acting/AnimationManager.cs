@@ -72,5 +72,20 @@ namespace Graphene.Acting
         {
             _animator.SetBool("Sliding", sliding);
         }
+
+        public void Shooting(bool state)
+        {
+            _animator.SetBool("Shooting", state);
+        }
+
+        public void Dash(bool state)
+        {
+            _animator.SetBool("Dash", state);
+        }
+
+        public void Charged(bool state)
+        {
+            _animator.SetBool("Charged", state);
+        }
     }
 }
