@@ -235,9 +235,4 @@ namespace Graphene.Acting.SideScroller
             SetRespawn(ch.GetPosition());
         }
     }
-
-    internal interface ICheckpoint
-    {
-        Vector3 GetPosition();
-    }
 }
