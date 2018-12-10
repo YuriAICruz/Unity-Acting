@@ -3,12 +3,13 @@ using System.Collections;
 using System.Linq;
 using Graphene.Acting.Interfaces;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 namespace Graphene.Acting.SideScroller
 {
     public class Player : SideScrollerActor
     {
+        public Action<Vector3> OnSetWayPoint;
+
         [SerializeField] private SideScrollerInputManager _input;
         public float JumpSpeed;
         public float JumpTime;
@@ -29,16 +30,24 @@ namespace Graphene.Acting.SideScroller
         private bool _shootHolding;
         private float _shootHoldingTime;
         public float ChargeTime;
+        public float ChargeReboundTime;
+        public float ChargeReboundDuration;
 
         private SpriteRenderer[] _renderers;
         private bool _charged;
 
         public float YKill;
         private Vector3 _respawnPosition;
+        private Coroutine _rebound;
+        private bool _dash, _dashButtom;
+        private bool _dead;
 
         protected override void OnStart()
         {
             base.OnStart();
+
+            _camera.BlockScene += BlockScene;
+            _camera.UnblockScene += UnblockScene;
 
             SetRespawn(transform.position);
 
@@ -72,14 +81,27 @@ namespace Graphene.Acting.SideScroller
             SetSide();
         }
 
+        private void BlockScene()
+        {
+            _physics.Block(true);
+        }
+
+        private void UnblockScene()
+        {
+            _physics.Block(false);
+        }
+
         private void SetRespawn(Vector3 pos)
         {
             _respawnPosition = pos;
+            OnSetWayPoint?.Invoke(pos);
         }
 
-        void SetSide()
+        private void SetSide()
         {
             var f = _dir > 0;
+            if (_physics.Sliding)
+                f = !f;
             foreach (var tr in _renderers)
             {
                 tr.flipX = f;
@@ -122,7 +144,23 @@ namespace Graphene.Acting.SideScroller
         {
             base.OnDie();
 
+            _dead = true;
+
+            StartCoroutine(DeadRoutine());
+        }
+
+        IEnumerator DeadRoutine()
+        {
+            yield return new WaitForSeconds(0.6f);
+
+            _dead = false;
+            Respawn();
+        }
+
+        private void Respawn()
+        {
             transform.position = _respawnPosition;
+            Life.Reset();
         }
 
         private void ShootHold()
@@ -142,7 +180,7 @@ namespace Graphene.Acting.SideScroller
             Shoot();
         }
 
-        IProjectile GetNextBullet()
+        private IProjectile GetNextBullet()
         {
             foreach (var bullet in _charged ? _chargedBullets : _bullets)
             {
@@ -162,18 +200,84 @@ namespace Graphene.Acting.SideScroller
 
         private void DashEnd()
         {
+            _dashButtom = false;
+
+            if (!_dash) return;
+
+            _dash = false;
+
+            if (_rebound != null)
+                StopCoroutine(_rebound);
+            _rebound = StartCoroutine(Rebound());
+
             _physics.DashStop();
-            _animation.Dash(false);
         }
 
         private void DashStart()
         {
-            if (!_charged) return;
+            _dashButtom = true;
+
+            if (!_charged || _dash) return;
+
+            _dash = true;
 
             _shootHoldingTime = Time.time;
 
+            if (_rebound != null)
+                StopCoroutine(_rebound);
+
+            _rebound = StartCoroutine(Rebound(true));
+
             _physics.Dash(_dir, DashSpeed, DashDuration);
-            _animation.Dash(true);
+        }
+
+        IEnumerator Rebound(bool init = false)
+        {
+            if (init)
+                yield return new WaitForSeconds(DashDuration);
+
+            var t = 0f;
+            while (t < ChargeReboundTime - ChargeReboundDuration * 0.5f)
+            {
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            t = 0;
+            var mapShoot = !_shootHolding;
+            var mapDash = !_dashButtom;
+
+            _animation.CanRebound(false);
+
+            while (t < ChargeReboundDuration)
+            {
+                if (!_shootHolding)
+                    mapShoot = true;
+                if (!_dashButtom)
+                    mapDash = true;
+
+                _animation.CanRebound(true);
+                if (mapShoot && _shootHolding || mapDash && _dashButtom)
+                {
+                    if (_dashButtom && mapDash)
+                    {
+                        _charged = true;
+                        DashStart();
+                    }
+                    else
+                    {
+                        _shootHoldingTime = Time.time - ChargeTime;
+                        _shootHolding = true;
+                    }
+
+                    yield break;
+                }
+
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            _animation.CanRebound(false);
         }
 
         private void JumpEnd()
@@ -197,10 +301,15 @@ namespace Graphene.Acting.SideScroller
         {
             base.DoDamage(damage, from);
 
+            if (_rebound != null)
+                StopCoroutine(_rebound);
+
+            _shootHolding = false;
+
             _physics.Throw(transform.position - from, 20);
         }
 
-        IEnumerator EndJumpRoutine()
+        private IEnumerator EndJumpRoutine()
         {
             yield return new WaitForSeconds(JumpTime * (_physics.Sliding ? 0.5f : 1));
             JumpEnd();
@@ -208,6 +317,8 @@ namespace Graphene.Acting.SideScroller
 
         private void Move(Vector2 dir)
         {
+            if (_dead) return;
+            
             if (Mathf.Abs(dir.x) > 0)
             {
                 _dir = Mathf.Sign(dir.x);
@@ -220,6 +331,7 @@ namespace Graphene.Acting.SideScroller
             _animation.Charged(_charged);
             _animation.SetSpeed(_physics.Speed());
             _animation.SetSliding(_physics.Sliding);
+            _animation.Dash(_physics.Dashing);
 
             if (transform.position.y < YKill)
             {

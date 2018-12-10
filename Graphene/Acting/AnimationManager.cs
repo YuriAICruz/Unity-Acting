@@ -87,5 +87,10 @@ namespace Graphene.Acting
         {
             _animator.SetBool("Charged", state);
         }
+
+        public void CanRebound(bool state)
+        {
+            _animator.SetBool("Glow", state);
+        }
     }
 }
