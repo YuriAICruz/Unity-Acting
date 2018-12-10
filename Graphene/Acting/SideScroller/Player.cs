@@ -300,7 +300,7 @@ namespace Graphene.Acting.SideScroller
         public override void DoDamage(int damage, Vector3 from)
         {
             base.DoDamage(damage, from);
-
+            
             if (_rebound != null)
                 StopCoroutine(_rebound);
 
@@ -324,6 +324,9 @@ namespace Graphene.Acting.SideScroller
                 _dir = Mathf.Sign(dir.x);
                 SetSide();
             }
+            
+//            if(transform.eulerAngles.magnitude > 0)
+//                transform.eulerAngles = Vector3.zero;
 
             _charged = Time.time - _shootHoldingTime >= ChargeTime && _shootHolding;
 

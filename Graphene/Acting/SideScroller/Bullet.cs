@@ -17,6 +17,7 @@ namespace Graphene
         private GameObject _ignore;
 
         private SpriteRenderer _renderer;
+        private Transform _parent;
 
         public bool Idle { get; set; }
 
@@ -28,6 +29,8 @@ namespace Graphene
             _iniLocPos = transform.localPosition;
 
             _renderer = GetComponent<SpriteRenderer>();
+
+            _parent = transform.parent;
         }
 
         public void Shoot(Vector3 pos, Vector3 dir, GameObject ignore = null)
@@ -38,6 +41,8 @@ namespace Graphene
             _ignore = ignore;
 
             _renderer.flipX = _dir.x > 0;
+            
+            transform.SetParent(null);
         }
 
         private void Update()
@@ -79,6 +84,7 @@ namespace Graphene
         private void DisableBulet()
         {
             transform.position = Vector3.one*-9999;
+            transform.SetParent(_parent);
             Idle = true;
         }
     }
