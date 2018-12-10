@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Graphene.Acting.Collectables;
 using Graphene.Acting.Interfaces;
+using Graphene.Packages.Acting.Graphene.Acting.SideScroller;
 using UnityEngine;
 
 namespace Graphene.Acting.SideScroller
@@ -41,6 +43,7 @@ namespace Graphene.Acting.SideScroller
         private Coroutine _rebound;
         private bool _dash, _dashButtom;
         private bool _dead;
+        private HpContainer[] _collectables;
 
         protected override void OnStart()
         {
@@ -48,6 +51,8 @@ namespace Graphene.Acting.SideScroller
 
             _camera.BlockScene += BlockScene;
             _camera.UnblockScene += UnblockScene;
+
+            _collectables = FindObjectsOfType<HpContainer>();
 
             SetRespawn(transform.position);
 
@@ -146,6 +151,11 @@ namespace Graphene.Acting.SideScroller
 
             _dead = true;
 
+            foreach (var collectable in _collectables)
+            {
+                collectable.gameObject.SetActive(true);
+            }
+
             StartCoroutine(DeadRoutine());
         }
 
@@ -168,6 +178,7 @@ namespace Graphene.Acting.SideScroller
             _shootHolding = true;
             _shootHoldingTime = Time.time;
             _animation.Shooting(true);
+            Sfx.Charging(true);
         }
 
         private void ShootRelease()
@@ -176,6 +187,7 @@ namespace Graphene.Acting.SideScroller
 
             _shootHolding = false;
             _animation.Shooting(false);
+            Sfx.Charging(false);
 
             Shoot();
         }
@@ -196,6 +208,9 @@ namespace Graphene.Acting.SideScroller
 
             var d = _physics.Sliding ? -_dir : _dir;
             b?.Shoot(transform.TransformPoint(new Vector3(BulletSpawn.x * d, BulletSpawn.y)), Vector3.right * d * BulletsSpeed, gameObject);
+
+            if (b != null)
+                Sfx.Shoot();
         }
 
         private void DashEnd()
@@ -248,6 +263,7 @@ namespace Graphene.Acting.SideScroller
             var mapDash = !_dashButtom;
 
             _animation.CanRebound(false);
+            Sfx.CanRebound(false);
 
             while (t < ChargeReboundDuration)
             {
@@ -257,6 +273,7 @@ namespace Graphene.Acting.SideScroller
                     mapDash = true;
 
                 _animation.CanRebound(true);
+                Sfx.CanRebound(true);
                 if (mapShoot && _shootHolding || mapDash && _dashButtom)
                 {
                     if (_dashButtom && mapDash)
@@ -278,6 +295,7 @@ namespace Graphene.Acting.SideScroller
             }
 
             _animation.CanRebound(false);
+            Sfx.CanRebound(false);
         }
 
         private void JumpEnd()
@@ -300,7 +318,7 @@ namespace Graphene.Acting.SideScroller
         public override void DoDamage(int damage, Vector3 from)
         {
             base.DoDamage(damage, from);
-            
+
             if (_rebound != null)
                 StopCoroutine(_rebound);
 
@@ -318,13 +336,13 @@ namespace Graphene.Acting.SideScroller
         private void Move(Vector2 dir)
         {
             if (_dead) return;
-            
+
             if (Mathf.Abs(dir.x) > 0)
             {
                 _dir = Mathf.Sign(dir.x);
                 SetSide();
             }
-            
+
 //            if(transform.eulerAngles.magnitude > 0)
 //                transform.eulerAngles = Vector3.zero;
 
@@ -332,9 +350,13 @@ namespace Graphene.Acting.SideScroller
 
             _physics.Move(dir, Speed);
             _animation.Charged(_charged);
+            Sfx.Charged(_charged);
             _animation.SetSpeed(_physics.Speed());
+            Sfx.SetSpeed(_physics.Speed());
             _animation.SetSliding(_physics.Sliding);
+            Sfx.SetSliding(_physics.Sliding);
             _animation.Dash(_physics.Dashing);
+            Sfx.Dash(_physics.Dashing);
 
             if (transform.position.y < YKill)
             {
@@ -345,7 +367,20 @@ namespace Graphene.Acting.SideScroller
         private void OnTriggerEnter2D(Collider2D other)
         {
             var ch = other.GetComponent<ICheckpoint>();
-            if (ch == null) return;
+            if (ch == null)
+            {
+                var hp = other.GetComponent<HpContainer>();
+
+
+                if (hp != null)
+                {
+                    Life.RecoverHp(hp.Hp);
+                    hp.gameObject.SetActive(false);
+                    Sfx.Collect();
+                }
+
+                return;
+            }
 
             SetRespawn(ch.GetPosition());
         }

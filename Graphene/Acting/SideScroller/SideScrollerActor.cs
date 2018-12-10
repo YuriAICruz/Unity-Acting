@@ -12,6 +12,8 @@ namespace Graphene.Acting.SideScroller
     {
         protected IActorController _actorController;
         
+        public Sfxmanager Sfx;
+        
         public float Speed;
         public float Gravity;
         public float WallSlide;
@@ -39,6 +41,7 @@ namespace Graphene.Acting.SideScroller
         {
             Life.ReceiveDamage(damage);
             _animation.ReceiveDamage();
+            Sfx.ReceiveDamage();
         }
 
         private void Start()
@@ -77,7 +80,9 @@ namespace Graphene.Acting.SideScroller
 
             _physics.OnWallClose += TouchWall;
             _physics.JumpState += _animation.Jump;
+            _physics.JumpState += Sfx.Jump;
             _physics.GroundState += _animation.SetGroundState;
+            _physics.GroundState += Sfx.SetGroundState;
 
             OnEnabled();
         }
@@ -88,7 +93,9 @@ namespace Graphene.Acting.SideScroller
 
             _physics.OnWallClose -= TouchWall;
             _physics.JumpState -= _animation.Jump;
+            _physics.JumpState -= Sfx.Jump;
             _physics.GroundState -= _animation.SetGroundState;
+            _physics.GroundState -= Sfx.SetGroundState;
 
             OnDisabled();
         }
@@ -119,6 +126,7 @@ namespace Graphene.Acting.SideScroller
         protected virtual void OnDie()
         {   
             _animation.Die();
+            Sfx.Die();
         }
     }
 }

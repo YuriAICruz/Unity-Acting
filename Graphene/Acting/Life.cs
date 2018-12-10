@@ -15,6 +15,12 @@ namespace Graphene.Acting
         {
             Hp = MaxHp;
         }
+        
+        public void RecoverHp(int life)
+        {
+            Hp += life;
+            Hp = Math.Min(MaxHp, Hp);
+        }
 
         public void ReceiveDamage(int damage)
         {
