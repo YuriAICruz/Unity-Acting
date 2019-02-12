@@ -71,14 +71,14 @@ namespace Graphene.Acting.Platformer
         {
             if (_canInteract) return;
             _animation.Attack();
-            _weapon.SetEnabled();
+            _weapon.SetEnabled(0,0.6f);
         }
 
         private void AttackSeq()
         {
             if (_canInteract) return;
             _animation.AttackSeq();
-            _weapon.SetEnabled(0.2f);
+            _weapon.SetEnabled(0.2f,0.3f);
         }
 
         private void Interact()
