@@ -1,4 +1,5 @@
-﻿using Graphene.Physics.TwinStick;
+﻿using Graphene.Acting.Interfaces;
+using Graphene.Physics.TwinStick;
 using UnityEngine;
 
 namespace Graphene.Acting.TwinStick
@@ -9,6 +10,9 @@ namespace Graphene.Acting.TwinStick
     {
         public ShipStatus ShipStatus;
         protected TwinStickShipPhysics _physics;
+
+        public IWeapon LeftWeapon;
+        public IWeapon RightWeapon;
 
         private void Awake()
         {

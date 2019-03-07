@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Graphene.Acting.Interfaces;
+using UnityEngine;
 
 namespace Graphene.Acting.TwinStick
 {
@@ -10,6 +11,24 @@ namespace Graphene.Acting.TwinStick
         {
             _input.Init();
             OnEnabled();
+
+            GenerateTempWeapons();
+        }
+
+        private void GenerateTempWeapons()
+        {
+            var wp = Resources.Load<GameObject>("Weapons/FixedMachineGun");
+
+            LeftWeapon = Instantiate(wp, transform).GetComponent<IWeapon>();
+            LeftWeapon.SetTip(new Vector3(-0.4f, 0, 0.2f));
+
+            RightWeapon = Instantiate(wp, transform).GetComponent<IWeapon>();
+            RightWeapon.SetTip(new Vector3(0.4f, 0, 0.2f));
+        }
+
+        private void OnDestroy()
+        {
+            _input.DeInit();
         }
 
         protected override void OnEnabled()
@@ -31,22 +50,20 @@ namespace Graphene.Acting.TwinStick
 
         private void ShootRHold()
         {
-            throw new System.NotImplementedException();
+            RightWeapon.Use(transform.forward);
         }
 
         private void ShootRRelease()
         {
-            throw new System.NotImplementedException();
         }
 
         private void ShootLRelease()
         {
-            throw new System.NotImplementedException();
         }
 
         private void ShootLHold()
         {
-            throw new System.NotImplementedException();
+            LeftWeapon.Use(transform.forward);
         }
 
         private void Cut()
@@ -61,7 +78,7 @@ namespace Graphene.Acting.TwinStick
 
         private void Aim(Vector2 dir)
         {
-            _physics.Look(dir);
+            _physics.Look(dir, _input.IsKeyboardMouse);
         }
 
         private void Move(Vector2 dir)
