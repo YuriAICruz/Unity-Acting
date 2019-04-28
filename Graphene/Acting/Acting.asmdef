@@ -4,11 +4,14 @@
         "Physics",
         "Graphene.Utils",
         "Graphene.CameraManagement",
-        "Graphene.InputManager",
-        "Graphene.Inventory"
+        "Graphene.InputManager"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
