@@ -18,7 +18,7 @@ namespace Graphene.Acting.Platformer
         public Vector3 Offset;
         private IDamageble _owner;
         private List<IDamageble> _lastHits;
-        private Coroutine _routine;
+        private Coroutine _routine, _using;
 
         private void Awake()
         {
@@ -28,6 +28,37 @@ namespace Graphene.Acting.Platformer
         public void SetOwner(IDamageble owner)
         {
             _owner = owner;
+        }
+        
+        public void Use(float delay = 0, float duration = 0.4f)
+        {
+            if (_using != null)
+            {
+                StopCoroutine(_using);
+                _using = null;
+            }
+
+            _using = StartCoroutine(Using(delay, duration));
+        }
+        
+        IEnumerator Using(float delay, float duration)
+        {
+            // _enabled = false;
+            _lastHits = new List<IDamageble>();
+            
+            yield return new WaitForSeconds(delay);
+
+            Hit();
+
+            yield return new WaitForSeconds(duration);
+
+            _enabled = false;
+        }
+
+        private void Hit()
+        {
+            //TODO: distance based hit
+            UnityEngine.Physics.SphereCastAll(transform.TransformPoint(Offset), Height, )
         }
 
         public void SetEnabled(float delay = 0, float duration = 0.4f)
@@ -43,7 +74,7 @@ namespace Graphene.Acting.Platformer
 
         IEnumerator Enable(float delay, float duration)
         {
-            _enabled = false;
+            // _enabled = false;
             _lastHits = new List<IDamageble>();
             
             yield return new WaitForSeconds(delay);
@@ -62,10 +93,7 @@ namespace Graphene.Acting.Platformer
             var rays = new Ray[]
             {
                 new Ray(transform.TransformPoint(Offset), transform.forward),
-                new Ray(transform.TransformPoint(Offset) + transform.right * Radius, transform.forward),
-                new Ray(transform.TransformPoint(Offset) - transform.right * Radius, transform.forward),
-                new Ray(transform.TransformPoint(Offset) + transform.up * Radius, transform.forward),
-                new Ray(transform.TransformPoint(Offset) - transform.up * Radius, transform.forward)
+                new Ray(transform.TransformPoint(Offset) + transform.forward * Height, -transform.forward),
             };
 
             foreach (var ray in rays)
@@ -85,7 +113,7 @@ namespace Graphene.Acting.Platformer
 
                 if (dmg == null || (_owner != null && _owner == dmg) || _lastHits.Contains(dmg)) continue;
 
-                _lastHits.Add(dmg);
+                //_lastHits.Add(dmg);
                 Instantiate(_hitParticle, hit.point, Quaternion.identity);
                 dmg.DoDamage(Damage, transform.position);
             }
