@@ -1,7 +1,7 @@
 {
     "name": "Graphene.Acting",
     "references": [
-        "Physics",
+        "Graphene.Physics",
         "Graphene.Utils",
         "Graphene.CameraManagement",
         "Graphene.InputManager",

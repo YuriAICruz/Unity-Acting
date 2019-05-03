@@ -3,12 +3,14 @@ using UnityEngine;
 
 namespace Graphene.Acting.TwinStick
 {
+    [RequireComponent(typeof(TwinStickInputManager))]
     public class Player : TwinStickActor
     {
-        [SerializeField] private TwinStickInputManager _input;
+        private TwinStickInputManager _input;
 
         protected override void OnAwake()
         {
+            _input = GetComponent<TwinStickInputManager>();
             _input.Init();
             OnEnabled();
 

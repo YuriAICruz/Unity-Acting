@@ -12,6 +12,7 @@ namespace Graphene.Acting.Platformer
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CapsuleCollider))]
     [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(CharacterPhysics))]
     public abstract class PlatformerActor : Actor
     {
         protected IActorController _actorController;
@@ -34,8 +35,7 @@ namespace Graphene.Acting.Platformer
 
         private void Awake()
         {
-            var cap = GetComponent<CapsuleCollider>();
-            _physics = new CharacterPhysics(GetComponent<Rigidbody>(), cap, Camera.main.transform, cap.radius);
+            _physics = GetComponent<CharacterPhysics>();
 
             _animation = new AnimationManager(GetComponent<Animator>());
 

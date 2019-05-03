@@ -9,7 +9,6 @@ namespace Graphene.Acting.Platformer
 {
     public class Player : PlatformerActor
     {
-        [SerializeField] 
         private PlatformerInputManager _input;
 
         protected override void OnStart()
@@ -18,6 +17,7 @@ namespace Graphene.Acting.Platformer
             
             if (_actorController.isLocalPlayer)
             {
+                _input = GetComponent<PlatformerInputManager>();
                 _input.Init();
                 OnEnabled();
             }

@@ -8,11 +8,12 @@ using UnityEngine;
 
 namespace Graphene.Acting.SideScroller
 {
+    [RequireComponent(typeof(SideScrollerInputManager))]
     public class Player : SideScrollerActor
     {
         public Action<Vector3> OnSetWayPoint;
 
-        [SerializeField] private SideScrollerInputManager _input;
+        private SideScrollerInputManager _input;
         public float JumpSpeed;
         public float JumpTime;
         public float WallJumpSpeed;
@@ -48,7 +49,7 @@ namespace Graphene.Acting.SideScroller
         protected override void OnStart()
         {
             base.OnStart();
-
+            
             _camera.BlockScene += BlockScene;
             _camera.UnblockScene += UnblockScene;
 
@@ -78,6 +79,7 @@ namespace Graphene.Acting.SideScroller
 
             if (_actorController.isLocalPlayer)
             {
+                _input = GetComponent<SideScrollerInputManager>();
                 _input.Init();
                 OnEnabled();
             }
