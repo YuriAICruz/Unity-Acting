@@ -58,7 +58,7 @@ namespace Graphene.Acting.Platformer
         private void Hit()
         {
             //TODO: distance based hit
-            UnityEngine.Physics.SphereCastAll(transform.TransformPoint(Offset), Height, )
+            UnityEngine.Physics.SphereCastAll(transform.TransformPoint(Offset), Height, transform.forward, Radius);
         }
 
         public void SetEnabled(float delay = 0, float duration = 0.4f)
