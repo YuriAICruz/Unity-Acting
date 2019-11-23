@@ -4,5 +4,8 @@
     "version": "0.1.0",
     "unity": "2018.2",
     "description": ". . .",
-    "dependencies": { }
+    "dependencies": {
+        "graphene.inventory": "1.0.0",
+        "graphene.physics": "1.0.0"
+    }
 }
