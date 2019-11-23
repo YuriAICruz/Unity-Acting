@@ -29,7 +29,9 @@ namespace Graphene.Acting.FirsPerson
         protected IInteractible _currentIntreactible;
         protected bool _canClear;
         
-        protected Weapon _weapon;
+        protected Gun _weapon;
+
+        private Transform lookPoint;
 
         private void Awake()
         {
@@ -37,7 +39,7 @@ namespace Graphene.Acting.FirsPerson
 
             _animation = new AnimationManager(GetComponent<Animator>());
 
-            _weapon = transform.GetComponentInChildren<Weapon>();
+            _weapon = transform.GetComponentInChildren<Gun>();
             if (_weapon != null)
             {
                 _weapon.SetOwner(this);
@@ -45,6 +47,9 @@ namespace Graphene.Acting.FirsPerson
 
             Life.Reset();
             Life.OnDie += OnDie;
+            
+            lookPoint = new GameObject("lookPoint").transform;
+            lookPoint.SetParent(transform);
 
             OnAwake();
         }
@@ -114,6 +119,13 @@ namespace Graphene.Acting.FirsPerson
 //            wdir.Normalize();
 
             transform.rotation = Quaternion.LookRotation(dir);
+        }
+        
+
+        protected void SetLookPoint(Transform camera)
+        {
+            lookPoint.forward = camera.forward;
+            lookPoint.position = camera.position;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -187,6 +199,24 @@ namespace Graphene.Acting.FirsPerson
 
         private void OnCollisionExit(Collision other)
         {
+        }
+        
+        protected void Attack()
+        {
+            if (_canInteract) return;
+            _animation.Attack();
+
+            if (_weapon)
+                _weapon.Use(new Ray(lookPoint.position, lookPoint.forward));
+        }
+
+        protected void AttackSeq()
+        {
+            if (_canInteract) return;
+            _animation.AttackSeq();
+
+            if (_weapon)
+                _weapon.Reload();
         }
 
         public void FootR()

@@ -38,7 +38,14 @@ namespace Graphene.Acting.FirsPerson
                 OnEnabled();
             }
 
-            _input.Right_Axis += _camera.Aim;
+            _input.Right_Axis += Aim;
+        }
+
+        private void Aim(Vector2 delta)
+        {
+            _camera.Aim(delta);
+
+            SetLookPoint(_camera.transform);
         }
 
         protected override void OnEnabled()
@@ -82,23 +89,6 @@ namespace Graphene.Acting.FirsPerson
             _physics.Dodge(_dodgeDuration, Speed * 2, () => { _input.UnblockInputs(); });
         }
 
-        private void Attack()
-        {
-            if (_canInteract) return;
-            _animation.Attack();
-
-            if (_weapon)
-                _weapon.Use(0, 0.6f);
-        }
-
-        private void AttackSeq()
-        {
-            if (_canInteract) return;
-            _animation.AttackSeq();
-
-            if (_weapon)
-                _weapon.Use(0.2f, 0.3f);
-        }
 
         private void Interact()
         {
