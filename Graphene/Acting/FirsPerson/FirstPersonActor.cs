@@ -5,13 +5,12 @@ using Graphene.Acting.Collectables;
 using Graphene.Acting.Interfaces;
 using Graphene.Acting.Platformer;
 using Graphene.CameraManagement;
-using Graphene.Physics.ThirdPersonShooter;
+using Graphene.Physics.FirstPerson;
 using UnityEngine;
 
 namespace Graphene.Acting.FirsPerson
 {
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(CapsuleCollider))]
+    [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(Animator))]
     public class FirstPersonActor : Actor
     {
