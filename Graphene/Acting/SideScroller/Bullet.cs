@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Graphene.Acting.Interfaces;
+using Graphene.Inventory;
 using UnityEngine;
 
 namespace Graphene

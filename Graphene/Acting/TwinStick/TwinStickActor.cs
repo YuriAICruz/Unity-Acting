@@ -1,4 +1,6 @@
 ﻿using Graphene.Acting.Interfaces;
+using Graphene.Inventory;
+using Graphene.Inventory.Wearables;
 using Graphene.Physics.TwinStick;
 using UnityEngine;
 
@@ -11,8 +13,8 @@ namespace Graphene.Acting.TwinStick
         public ShipStatus ShipStatus;
         protected TwinStickShipPhysics _physics;
 
-        public IWeapon LeftWeapon;
-        public IWeapon RightWeapon;
+        public IWeaponTopDown LeftWeapon;
+        public IWeaponTopDown RightWeapon;
 
         private void Awake()
         {

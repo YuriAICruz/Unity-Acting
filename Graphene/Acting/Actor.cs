@@ -1,17 +1,17 @@
 ﻿using System;
-using Graphene.Acting.Interfaces;
+using Graphene.Inventory;
 using UnityEngine;
 
 namespace Graphene.Acting
 {
-    public abstract class Actor : MonoBehaviour, IDamageble {
-    
+    public abstract class Actor : MonoBehaviour, IDamageble
+    {
         // protected CameraManagement Camera;
 
         protected Collider2D _collider;
 
         public int Id;
-        
+
         public Life Life;
         public Stamina Stamina;
 

@@ -73,8 +73,7 @@ namespace Graphene.Acting.ThirdPersonShooter
             if (_canInteract) return;
             _animation.Attack();
 
-            if (_weapon)
-                _weapon.Use(0, 0.6f);
+            _weapon?.Use(0, 0.6f);
         }
 
         private void AttackSeq()
@@ -82,8 +81,7 @@ namespace Graphene.Acting.ThirdPersonShooter
             if (_canInteract) return;
             _animation.AttackSeq();
 
-            if (_weapon)
-                _weapon.Use(0.2f, 0.3f);
+            _weapon?.Use(0.2f, 0.3f);
         }
 
         private void Interact()
@@ -97,7 +95,7 @@ namespace Graphene.Acting.ThirdPersonShooter
             var wdir = _camera.transform.TransformDirection(new Vector3(dir.x, 0, dir.y));
             wdir.y = 0;
             wdir.Normalize();
-            
+
             _physics.Move(wdir, Speed);
 
             var f = _camera.transform.forward;
@@ -114,7 +112,7 @@ namespace Graphene.Acting.ThirdPersonShooter
             yield return new WaitForSeconds(0.6f);
             _input.UnblockInputs();
         }
-        
+
         protected virtual void LockOff()
         {
             throw new NotImplementedException();

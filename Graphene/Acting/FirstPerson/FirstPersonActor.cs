@@ -5,10 +5,13 @@ using Graphene.Acting.Collectables;
 using Graphene.Acting.Interfaces;
 using Graphene.Acting.Platformer;
 using Graphene.CameraManagement;
+using Graphene.Inventory;
+using Graphene.Inventory.Wearables;
 using Graphene.Physics.FirstPerson;
 using UnityEngine;
+using Zenject;
 
-namespace Graphene.Acting.FirsPerson
+namespace Graphene.Acting.FirstPerson
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(Animator))]
@@ -29,7 +32,7 @@ namespace Graphene.Acting.FirsPerson
         protected IInteractible _currentIntreactible;
         protected bool _canClear;
         
-        protected Gun _weapon;
+        protected IGun _weapon;
 
         private Transform lookPoint;
 
@@ -39,11 +42,9 @@ namespace Graphene.Acting.FirsPerson
 
             _animation = new AnimationManager(GetComponent<Animator>());
 
-            _weapon = transform.GetComponentInChildren<Gun>();
-            if (_weapon != null)
-            {
-                _weapon.SetOwner(this);
-            }
+            _weapon = transform.GetComponentInChildren<IGun>();
+            
+            ((IWearable)_weapon)?.SetOwner(this);
 
             Life.Reset();
             Life.OnDie += OnDie;
@@ -206,8 +207,7 @@ namespace Graphene.Acting.FirsPerson
             if (_canInteract) return;
             _animation.Attack();
 
-            if (_weapon)
-                _weapon.Use(new Ray(lookPoint.position, lookPoint.forward));
+            _weapon?.Shoot(new Ray(lookPoint.position, lookPoint.forward));
         }
 
         protected void AttackSeq()
@@ -215,8 +215,7 @@ namespace Graphene.Acting.FirsPerson
             if (_canInteract) return;
             _animation.AttackSeq();
 
-            if (_weapon)
-                _weapon.Reload();
+            _weapon?.Reload();
         }
 
         public void FootR()

@@ -1,4 +1,6 @@
 ﻿using Graphene.Acting.Interfaces;
+using Graphene.Inventory;
+using Graphene.Inventory.Wearables;
 using UnityEngine;
 
 namespace Graphene.Acting.TwinStick
@@ -21,10 +23,10 @@ namespace Graphene.Acting.TwinStick
         {
             var wp = Resources.Load<GameObject>("Weapons/FixedMachineGun");
 
-            LeftWeapon = Instantiate(wp, transform).GetComponent<IWeapon>();
+            LeftWeapon = Instantiate(wp, transform).GetComponent<IWeaponTopDown>();
             LeftWeapon.SetTip(new Vector3(-0.4f, 0, 0.2f));
 
-            RightWeapon = Instantiate(wp, transform).GetComponent<IWeapon>();
+            RightWeapon = Instantiate(wp, transform).GetComponent<IWeaponTopDown>();
             RightWeapon.SetTip(new Vector3(0.4f, 0, 0.2f));
         }
 

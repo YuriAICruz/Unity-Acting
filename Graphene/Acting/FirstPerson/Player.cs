@@ -4,7 +4,7 @@ using DefaultNamespace;
 using Graphene.InputManager;
 using UnityEngine;
 
-namespace Graphene.Acting.FirsPerson
+namespace Graphene.Acting.FirstPerson
 {
     [RequireComponent(typeof(FpsInputManager))]
     public class Player : FirstPersonActor

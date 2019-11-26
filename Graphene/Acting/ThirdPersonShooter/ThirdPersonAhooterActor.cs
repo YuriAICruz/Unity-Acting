@@ -5,6 +5,8 @@ using Graphene.Acting.Collectables;
 using Graphene.Acting.Interfaces;
 using Graphene.Acting.Platformer;
 using Graphene.CameraManagement;
+using Graphene.Inventory;
+using Graphene.Inventory.Wearables;
 using Graphene.Physics.Platformer;
 using UnityEngine;
 using BasicPhysics = Graphene.Physics.ThirdPersonShooter.BasicPhysics;
@@ -33,7 +35,7 @@ namespace Graphene.Acting.ThirdPersonShooter
         protected IInteractible _currentIntreactible;
         protected bool _canClear;
         
-        protected Weapon _weapon;
+        protected IWeaponPlatformer _weapon;
 
         private void Awake()
         {
@@ -41,12 +43,9 @@ namespace Graphene.Acting.ThirdPersonShooter
 
             _animation = new AnimationManager(GetComponent<Animator>());
 
-            _weapon = transform.GetComponentInChildren<Weapon>();
-            if (_weapon != null)
-            {
-                _weapon.SetOwner(this);
-            }
-
+            _weapon = transform.GetComponentInChildren<WeaponPlatformer>();
+            ((IWearable)_weapon)?.SetOwner(this);
+            
             Life.Reset();
             Life.OnDie += OnDie;
 
